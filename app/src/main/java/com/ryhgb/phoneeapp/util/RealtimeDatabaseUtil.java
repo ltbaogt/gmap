@@ -5,11 +5,8 @@ import android.content.Context;
 import android.location.Location;
 import android.service.notification.StatusBarNotification;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.ryhgb.phoneeapp.module.location.AppFirebaseLocation;
 
 import java.text.SimpleDateFormat;
@@ -77,9 +74,11 @@ public class RealtimeDatabaseUtil {
     public void writeNotification(StatusBarNotification sbn) {
         if (mDatabase != null) {
             getGroupData(getCurrentFullDay(System.currentTimeMillis()))
-                    .child(sbn.getPackageName().replace(".","_"))
+                    .child(sbn.getPackageName().replace(".", "_"))
                     .child(getCurrentHourMinusSecond(System.currentTimeMillis()))
-                    .setValue(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT));
+                    .setValue(String.format("[%1$s] - %2$s",
+                            sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE),
+                            sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT)));
         }
     }
 }
